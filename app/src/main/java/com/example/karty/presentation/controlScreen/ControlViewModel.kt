@@ -27,6 +27,7 @@ class ControlViewModel : ViewModel() {
     val isConnected: LiveData<Boolean> = _isConnected
 
 
+
     fun moveWhileBtnPressed(motionEvent: MotionEvent, position: String): Boolean {
         if (motionEvent.action == MotionEvent.ACTION_DOWN) {
             val job = Job()
@@ -56,10 +57,13 @@ class ControlViewModel : ViewModel() {
                         val bluetoothManger =
                             context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
                         bluetoothAdapter = bluetoothManger.adapter
-                        val device: BluetoothDevice = bluetoothAdapter.getRemoteDevice(deviceAddress)
+                        val device: BluetoothDevice =
+                            bluetoothAdapter.getRemoteDevice(deviceAddress)
                         bluetoothSocket = device.createRfcommSocketToServiceRecord(BT_UUID)
                         bluetoothAdapter.cancelDiscovery()
                         bluetoothSocket!!.connect()
+                        //after connecting...
+                        receiveData()
                     }
                 } catch (e: IOException) {
                     connectionSuccess = false
@@ -81,6 +85,7 @@ class ControlViewModel : ViewModel() {
         if (bluetoothSocket != null) {
             try {
                 bluetoothSocket!!.outputStream.write(command.toByteArray())
+
             } catch (e: IOException) {
                 Log.d("ttt", "sendCommand: Could Not send command")
                 e.printStackTrace()
@@ -104,6 +109,28 @@ class ControlViewModel : ViewModel() {
             }
         }
     }*/
+
+
+    private fun receiveData() {
+        var bytes: Int
+        val buffer = ByteArray(1024)
+        var readMessage = ""
+        if (isConnected.value == true) {
+            try {
+                while (true) {
+                    //read bytes received and ins to buffer
+                    bytes = bluetoothSocket!!.inputStream.read(buffer)
+                    //convert to string
+                    readMessage += String(buffer, 0, bytes)
+                    if (readMessage != ""){
+                        Log.d("ttt", "receiveData: $readMessage")
+                    }
+                }
+            } catch (ex: Exception) {
+                ex.printStackTrace()
+            }
+        }
+    }
 
 
     fun disconnect() {
