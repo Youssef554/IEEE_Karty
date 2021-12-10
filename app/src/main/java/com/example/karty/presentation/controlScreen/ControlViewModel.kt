@@ -12,4 +12,7 @@ class ControlViewModel:ViewModel() {
     fun connectionChanged(isDeviceConnected:Boolean){
         _isConnected.value = isDeviceConnected
     }
+
+
+
 }
