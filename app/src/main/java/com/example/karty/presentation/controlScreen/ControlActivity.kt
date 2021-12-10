@@ -31,13 +31,8 @@ import kotlin.math.log
 
 class ControlActivity : AppCompatActivity() {
     private val viewModel:ControlViewModel by viewModels()
-    private val DELAY = 200L
     private lateinit var deviceAddress:String
     private lateinit var deviceName:String
-    var myUUID:UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")//constant value for the arduino bord
-    var bluetoothSocket:BluetoothSocket? = null
-    var isConnected = false
-    lateinit var bluetoothAdapter: BluetoothAdapter
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,8 +41,9 @@ class ControlActivity : AppCompatActivity() {
         deviceName = intent.getStringExtra("deviceName")!!
         supportActionBar?.title = "Control $deviceName"
         deviceAddress= intent.getStringExtra("macAddress")!!
-        connect(deviceAddress)
-        //buttons
+        viewModel.connect(this, deviceAddress)
+
+        //buttons declaration
         val forewordBtn:Button = findViewById(R.id.btn_GoForeword)
         val backwardBtn:Button = findViewById(R.id.btn_GoBackward)
         val rightBtn:Button = findViewById(R.id.btn_GoRight)
@@ -57,106 +53,34 @@ class ControlActivity : AppCompatActivity() {
             val tv:TextView = findViewById(R.id.tv_IsConnected)
             tv.text = if (it) "Connected" else "Not connected"
         }
+
+
+        //movement controls using a custom onTouch listener
         forewordBtn.setOnTouchListener { _, motionEvent ->
-            moveWhileBtnPressed(motionEvent, "a")
+            viewModel.moveWhileBtnPressed(motionEvent, "a")
         }
+
         rightBtn.setOnTouchListener { _, motionEvent ->
-            moveWhileBtnPressed(motionEvent, "b")
+            viewModel.moveWhileBtnPressed(motionEvent, "b")
         }
 
         backwardBtn.setOnTouchListener { _, motionEvent ->
-            moveWhileBtnPressed(motionEvent, "c")
+            viewModel.moveWhileBtnPressed(motionEvent, "c")
         }
 
         leftBtn.setOnTouchListener { _, motionEvent ->
-            moveWhileBtnPressed(motionEvent, "d")
+            viewModel.moveWhileBtnPressed(motionEvent, "d")
         }
     }
 
 
 
 
-    private fun moveWhileBtnPressed(motionEvent:MotionEvent, position: String):Boolean{
-        if(motionEvent.action == MotionEvent.ACTION_DOWN){
-            val job = Job()
-            CoroutineScope(Dispatchers.Main + job).launch {
-                while (true){
-                    Log.d("ttt", "onCreate: sending command, to move in position ($position)")
-                    sendCommand(position)
-                    if (motionEvent.action == MotionEvent.ACTION_UP) {
-                        break
-                    }
-                    delay(DELAY)
-                }
-            }
-        }
-        return true
-    }
 
-    private fun connect(deviceAddress:String){
-        var connectionSuccess = true
-        lifecycleScope.executeAsyncTask(
-            onPreExecute = {
-                Log.d("ttt", "connect: trying to connect....")
-                Toast.makeText(this, "Connecting to $deviceName", Toast.LENGTH_SHORT).show()
-            },
-            doInBackground = {
-                try {
-                    if (bluetoothSocket == null || !isConnected){
-                        Log.d("ttt", "connect: trying to connect2....")
-                        val bluetoothManger = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
-                        bluetoothAdapter = bluetoothManger.adapter
-                        val device:BluetoothDevice = bluetoothAdapter.getRemoteDevice(deviceAddress)
-                        bluetoothSocket = device.createRfcommSocketToServiceRecord(myUUID)
-                        bluetoothAdapter.cancelDiscovery()
-                        bluetoothSocket!!.connect()
-                    }
-                }catch (e:IOException){
-                    connectionSuccess = false
-                    Log.e("ttt", "connect: ${e.message}", )
-                    e.printStackTrace()
-                }
-            },
-            onPostExecute = {
-                if (!connectionSuccess){
-                    Log.d("ttt", "connect: Could not connect")
-                    Toast.makeText(this, "Could not connect", Toast.LENGTH_SHORT).show()
-                }else{
-                    isConnected = true
-                    viewModel.connectionChanged(true)
-                }
-            }
-        )
-    }
 
-    private fun sendCommand(command:String){
-        if (bluetoothSocket != null){
-            try {
-                bluetoothSocket!!.outputStream.write(command.toByteArray())
-            }catch (e: IOException){
-                Log.d("ttt", "sendCommand: Could Not send command")
-                e.printStackTrace()
-            }
-        }
-    }
-
-    fun disconnect(){
-        if (bluetoothSocket != null){
-            try {
-                bluetoothSocket!!.close()
-                bluetoothSocket = null
-                isConnected = false
-                viewModel.connectionChanged(false)
-                Log.d("ttt", "disconnect: Disconnected")
-            }catch (e:IOException){
-                e.printStackTrace()
-            }
-            finish()
-        }
-    }
-
+    //to terminate the connection on exit.
     override fun onBackPressed() {
-        disconnect()
+        viewModel.disconnect()
         super.onBackPressed()
     }
 }
