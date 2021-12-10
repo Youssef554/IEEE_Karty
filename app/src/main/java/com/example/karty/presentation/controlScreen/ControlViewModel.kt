@@ -78,7 +78,7 @@ class ControlViewModel:ViewModel() {
         )
     }
 
-    fun sendCommand(command:String){
+    private fun sendCommand(command:String){
         if (bluetoothSocket != null){
             try {
                 bluetoothSocket!!.outputStream.write(command.toByteArray())

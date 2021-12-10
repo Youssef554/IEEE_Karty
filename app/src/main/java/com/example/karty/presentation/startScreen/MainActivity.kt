@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.karty.presentation.utils.Helpers
@@ -17,13 +18,12 @@ import com.example.karty.presentation.controlScreen.ControlActivity
 
 class MainActivity : AppCompatActivity() {
     private lateinit var adapter: DevicesAdapter
-    private lateinit var viewModel: StartScreenViewModel
+    private val viewModel: StartScreenViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        //viewModel = ViewModelProvider(this).get(StartScreenViewModel::class.java)
-
+        //get the recyclerview
         val devicesRecyclerView: RecyclerView = findViewById(R.id.rv_DevicesList)
 
         val bluetoothManger = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
@@ -44,14 +44,15 @@ class MainActivity : AppCompatActivity() {
     private fun handleBluetoothOff() {
         val turnOnBluetoothActivity =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()){}
-        Toast.makeText(this, "The bluetooth is off", Toast.LENGTH_SHORT).show()
-        Helpers.showIsBluetoothOff(this, true)
+        Toast.makeText(this, "Please turn on Bluetooth", Toast.LENGTH_SHORT).show()
+        Helpers.showIsBluetoothOn(this, true)
         val btn: Button = findViewById(R.id.btn_RetryButton)
         btn.setOnClickListener {
             val intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
             turnOnBluetoothActivity.launch(intent)
         }
     }
+
         private fun setupRecyclerView(rv: RecyclerView) {
             adapter = DevicesAdapter(){name, macAddress ->
                 val intent = Intent(this, ControlActivity::class.java)
