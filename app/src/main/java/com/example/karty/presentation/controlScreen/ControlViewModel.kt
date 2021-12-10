@@ -1,17 +1,109 @@
 package com.example.karty.presentation.controlScreen
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothManager
+import android.bluetooth.BluetoothSocket
+import android.content.Context
+import android.util.Log
+import android.view.MotionEvent
+import android.widget.Toast
+import androidx.lifecycle.*
+import kotlinx.coroutines.*
+import java.io.IOException
+import java.util.*
+
+private val BT_UUID :UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
+private const val DELAY = 200L
+private lateinit var deviceAddress:String
+private lateinit var deviceName:String
+lateinit var bluetoothAdapter: BluetoothAdapter
 
 class ControlViewModel:ViewModel() {
+    var bluetoothSocket: BluetoothSocket? = null
+
     private var _isConnected:MutableLiveData<Boolean> = MutableLiveData(false)
     val isConnected:LiveData<Boolean> = _isConnected
 
 
-    fun connectionChanged(isDeviceConnected:Boolean){
-        _isConnected.value = isDeviceConnected
+
+
+
+    fun moveWhileBtnPressed(motionEvent: MotionEvent, position: String):Boolean{
+        if(motionEvent.action == MotionEvent.ACTION_DOWN){
+            val job = Job()
+            CoroutineScope(Dispatchers.Main + job).launch {
+                while (true){
+                    Log.d("ttt", "onCreate: sending command, to move in position ($position)")
+                    sendCommand(position)
+                    if (motionEvent.action == MotionEvent.ACTION_UP) {
+                        break
+                    }
+                    delay(DELAY)
+                }
+            }
+        }
+        return true
     }
+
+    fun connect(context: Context, deviceAddress:String){
+        var connectionSuccess = true
+        viewModelScope.executeAsyncTask(
+            onPreExecute = {
+                Log.d("ttt", "connect: trying to connect....")
+            },
+            doInBackground = {
+                try {
+                    if (bluetoothSocket == null || !isConnected.value!!){
+                        val bluetoothManger = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+                        bluetoothAdapter = bluetoothManger.adapter
+                        val device: BluetoothDevice = bluetoothAdapter.getRemoteDevice(deviceAddress)
+                        bluetoothSocket = device.createRfcommSocketToServiceRecord(BT_UUID)
+                        bluetoothAdapter.cancelDiscovery()
+                        bluetoothSocket!!.connect()
+                    }
+                }catch (e: IOException){
+                    connectionSuccess = false
+                    Log.e("ttt", "connect: ${e.message}", )
+                    e.printStackTrace()
+                }
+            },
+            onPostExecute = {
+                if (!connectionSuccess){
+                    Log.d("ttt", "connect: Could not connect")
+                }else{
+                    _isConnected.value = true
+                }
+            }
+        )
+    }
+
+    fun sendCommand(command:String){
+        if (bluetoothSocket != null){
+            try {
+                bluetoothSocket!!.outputStream.write(command.toByteArray())
+            }catch (e: IOException){
+                Log.d("ttt", "sendCommand: Could Not send command...")
+                _isConnected.value = false
+                e.printStackTrace()
+            }
+        }
+    }
+
+    fun disconnect(){
+        if (bluetoothSocket != null){
+            try {
+                bluetoothSocket!!.close()
+                bluetoothSocket = null
+                _isConnected.value = false
+
+                Log.d("ttt", "disconnect: Disconnected...")
+            }catch (e: IOException){
+                e.printStackTrace()
+            }
+        }
+    }
+
 
 
 
