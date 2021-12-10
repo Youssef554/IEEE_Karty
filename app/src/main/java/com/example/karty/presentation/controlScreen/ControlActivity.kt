@@ -1,32 +1,12 @@
 package com.example.karty.presentation.controlScreen
 
-import android.R.attr
-import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothManager
-import android.bluetooth.BluetoothSocket
-import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import android.util.Log
-import android.widget.Button
-import androidx.lifecycle.lifecycleScope
-import com.example.karty.R
-import java.io.IOException
-import java.util.*
-import android.view.MotionEvent
-
-import android.R.attr.button
 import android.annotation.SuppressLint
-import android.os.Handler
-import android.view.View
+import android.os.Bundle
+import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.viewModels
-import kotlinx.coroutines.*
-import java.text.FieldPosition
-import kotlin.concurrent.schedule
-import kotlin.math.log
+import androidx.appcompat.app.AppCompatActivity
+import com.example.karty.R
 
 
 class ControlActivity : AppCompatActivity() {
