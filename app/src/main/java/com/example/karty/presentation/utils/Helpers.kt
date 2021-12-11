@@ -7,6 +7,8 @@ import com.example.karty.R
 import com.example.karty.presentation.startScreen.MainActivity
 
 object Helpers {
+
+    //did not use....
     fun showLoadingIndicator(progressBar: ProgressBar, state:Boolean){
         progressBar.visibility = if (state) ProgressBar.VISIBLE else ProgressBar.GONE
     }

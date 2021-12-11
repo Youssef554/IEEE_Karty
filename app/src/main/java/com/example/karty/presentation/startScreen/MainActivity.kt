@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.karty.presentation.utils.Helpers
 import com.example.karty.R
 import com.example.karty.presentation.controlScreen.ControlActivity
+import com.example.karty.presentation.turnOnBluetoothScreen.TurnOnBluetoothActivity
 
 class MainActivity : AppCompatActivity() {
     private lateinit var adapter: DevicesAdapter
@@ -33,34 +34,24 @@ class MainActivity : AppCompatActivity() {
             val devices = bluetoothAdapter.bondedDevices
             setupRecyclerView(devicesRecyclerView)
             adapter.submitList(devices?.toList())
-        } else {
-            handleBluetoothOff()
         }
 
 
     }
 
 
-    private fun handleBluetoothOff() {
-        val turnOnBluetoothActivity =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()){}
-        Toast.makeText(this, "Please turn on Bluetooth", Toast.LENGTH_SHORT).show()
-        Helpers.showIsBluetoothOn(this, true)
-        val btn: Button = findViewById(R.id.btn_RetryButton)
-        btn.setOnClickListener {
-            val intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-            turnOnBluetoothActivity.launch(intent)
+    private fun setupRecyclerView(rv: RecyclerView) {
+        adapter = DevicesAdapter() { name, macAddress ->
+            val intent = Intent(this, ControlActivity::class.java)
+            intent.putExtra("deviceName", name)
+            intent.putExtra("macAddress", macAddress)
+            startActivity(intent)
         }
+        rv.layoutManager = LinearLayoutManager(this)
+        rv.adapter = adapter
     }
 
-        private fun setupRecyclerView(rv: RecyclerView) {
-            adapter = DevicesAdapter(){name, macAddress ->
-                val intent = Intent(this, ControlActivity::class.java)
-                intent.putExtra("deviceName", name)
-                intent.putExtra("macAddress", macAddress)
-                startActivity(intent)
-            }
-            rv.layoutManager = LinearLayoutManager(this)
-            rv.adapter = adapter
-        }
+    override fun onBackPressed() {
+        super.onBackPressed()
     }
+}
