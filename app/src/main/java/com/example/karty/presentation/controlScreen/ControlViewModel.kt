@@ -12,7 +12,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
+import java.io.DataInputStream
 import java.io.IOException
+import java.io.InputStream
 import java.util.*
 
 private val BT_UUID: UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
@@ -25,6 +27,9 @@ class ControlViewModel : ViewModel() {
 
     private var _isConnected: MutableLiveData<Boolean> = MutableLiveData(false)
     val isConnected: LiveData<Boolean> = _isConnected
+
+    private var _text: MutableLiveData<String> = MutableLiveData("")
+    val text: LiveData<String> = _text
 
 
 
@@ -63,7 +68,7 @@ class ControlViewModel : ViewModel() {
                         bluetoothAdapter.cancelDiscovery()
                         bluetoothSocket!!.connect()
                         //after connecting...
-                        receiveData()
+
                     }
                 } catch (e: IOException) {
                     connectionSuccess = false
@@ -85,6 +90,11 @@ class ControlViewModel : ViewModel() {
         if (bluetoothSocket != null) {
             try {
                 bluetoothSocket!!.outputStream.write(command.toByteArray())
+                viewModelScope.launch(Dispatchers.IO) {
+                    receiveBluetooth()
+                    Log.d("ttt", "sendCommand: ${text.value}")
+                }
+
 
             } catch (e: IOException) {
                 Log.d("ttt", "sendCommand: Could Not send command")
@@ -110,26 +120,25 @@ class ControlViewModel : ViewModel() {
         }
     }*/
 
-
-    private fun receiveData() {
-        var bytes: Int
-        val buffer = ByteArray(1024)
-        var readMessage = ""
-        if (isConnected.value == true) {
+    //under construction....
+    private fun receiveBluetooth() {
+        val buffer = ByteArray(256)
+        val bytes:Int
+        var tmpIn: InputStream? = null
+        if (bluetoothSocket != null) {
             try {
-                while (true) {
-                    //read bytes received and ins to buffer
-                    bytes = bluetoothSocket!!.inputStream.read(buffer)
-                    //convert to string
-                    readMessage += String(buffer, 0, bytes)
-                    if (readMessage != ""){
-                        Log.d("ttt", "receiveData: $readMessage")
-                    }
-                }
-            } catch (ex: Exception) {
-                ex.printStackTrace()
+                tmpIn = bluetoothSocket!!.inputStream
+                val mmInStream = DataInputStream(tmpIn)
+                bytes = mmInStream.read(buffer)
+                val readMessage = String(buffer, 0, bytes)
+                _text.value = readMessage
+                //input.text="123"
+            } catch (e:IOException) {
+                e.printStackTrace()
             }
         }
+
+
     }
 
 

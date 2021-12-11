@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="CardElevation">8dp</dimen>
-    <dimen name="CardRoundness">6dp</dimen>
-    <dimen name="CardPadding">4dp</dimen>
+    <dimen name="CardRoundness">0dp</dimen>
+    <dimen name="CardMarginV">4dp</dimen>
+    <dimen name="CardMarginH">10dp</dimen>
 </resources>

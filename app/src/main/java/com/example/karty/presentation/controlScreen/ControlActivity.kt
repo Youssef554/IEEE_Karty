@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.karty.R
@@ -28,11 +29,13 @@ class ControlActivity : AppCompatActivity() {
         val backwardBtn:Button = findViewById(R.id.btn_GoBackward)
         val rightBtn:Button = findViewById(R.id.btn_GoRight)
         val leftBtn:Button = findViewById(R.id.btn_GoLeft)
+
         //monitor is connected or not
         viewModel.isConnected.observe(this){
             val tv:TextView = findViewById(R.id.tv_IsConnected)
             tv.text = if (it) "Connected" else "Not connected"
         }
+
 
 
         //movement controls using a custom onTouch listener

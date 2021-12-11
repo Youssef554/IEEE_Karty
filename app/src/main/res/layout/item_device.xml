@@ -5,7 +5,10 @@
     android:id="@+id/dc_DeviceCard"
     android:layout_width="match_parent"
     android:layout_height="74dp"
-    android:layout_margin="6dp"
+    android:layout_marginStart="@dimen/CardMarginH"
+    android:layout_marginTop="@dimen/CardMarginV"
+    android:layout_marginEnd="@dimen/CardMarginH"
+    android:layout_marginBottom="@dimen/CardMarginV"
     app:cardCornerRadius="@dimen/CardRoundness"
     app:cardElevation="@dimen/CardElevation">
 
