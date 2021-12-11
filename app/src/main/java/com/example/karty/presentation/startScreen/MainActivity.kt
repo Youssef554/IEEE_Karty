@@ -51,7 +51,4 @@ class MainActivity : AppCompatActivity() {
         rv.adapter = adapter
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-    }
 }
