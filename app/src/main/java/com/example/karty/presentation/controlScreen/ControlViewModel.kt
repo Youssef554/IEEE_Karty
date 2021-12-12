@@ -18,7 +18,7 @@ import java.io.InputStream
 import java.util.*
 
 private val BT_UUID: UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
-private const val DELAY = 200L
+private const val DELAY = 250L
 lateinit var bluetoothAdapter: BluetoothAdapter
 
 
@@ -67,8 +67,6 @@ class ControlViewModel : ViewModel() {
                         bluetoothSocket = device.createRfcommSocketToServiceRecord(BT_UUID)
                         bluetoothAdapter.cancelDiscovery()
                         bluetoothSocket!!.connect()
-                        //after connecting...
-
                     }
                 } catch (e: IOException) {
                     connectionSuccess = false
@@ -90,12 +88,6 @@ class ControlViewModel : ViewModel() {
         if (bluetoothSocket != null) {
             try {
                 bluetoothSocket!!.outputStream.write(command.toByteArray())
-                viewModelScope.launch(Dispatchers.IO) {
-                    receiveBluetooth()
-                    Log.d("ttt", "sendCommand: ${text.value}")
-                }
-
-
             } catch (e: IOException) {
                 Log.d("ttt", "sendCommand: Could Not send command")
                 e.printStackTrace()
@@ -121,24 +113,27 @@ class ControlViewModel : ViewModel() {
     }*/
 
     //under construction....
-    private fun receiveBluetooth() {
-        val buffer = ByteArray(256)
-        val bytes:Int
-        var tmpIn: InputStream? = null
-        if (bluetoothSocket != null) {
+    private fun receiveData() {
+        var bytes: Int
+        val buffer = ByteArray(1024)
+        var readMessage = ""
+        if (isConnected.value == true) {
             try {
-                tmpIn = bluetoothSocket!!.inputStream
-                val mmInStream = DataInputStream(tmpIn)
-                bytes = mmInStream.read(buffer)
-                val readMessage = String(buffer, 0, bytes)
-                _text.value = readMessage
-                //input.text="123"
-            } catch (e:IOException) {
-                e.printStackTrace()
+
+                while (!(readMessage.contains(';'))) {
+                    //read bytes received and ins to buffer
+                    bytes = bluetoothSocket!!.inputStream.read(buffer)
+                    //convert to string
+                    readMessage += String(buffer, 0, bytes)
+                    _text.value += readMessage
+                    if (_text.value.isNullOrEmpty()){
+                        Log.e("ttt", "receiveData: ${_text.value}", )
+                    }
+                }
+            } catch (ex: Exception) {
+                ex.printStackTrace()
             }
         }
-
-
     }
 
 
