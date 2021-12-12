@@ -1,28 +1,25 @@
 package com.example.karty.presentation.controlScreen
 
-import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothManager
 import android.bluetooth.BluetoothSocket
-import android.content.Context
 import android.util.Log
 import android.view.MotionEvent
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.karty.domain.use_cases.BluetoothUseCases
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
-import java.io.DataInputStream
 import java.io.IOException
-import java.io.InputStream
-import java.util.*
+import javax.inject.Inject
 
-private val BT_UUID: UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
 private const val DELAY = 250L
-lateinit var bluetoothAdapter: BluetoothAdapter
+private lateinit var DEVICE_MAC: String
 
-
-class ControlViewModel : ViewModel() {
+@HiltViewModel
+class ControlViewModel @Inject constructor(
+    private val useCases: BluetoothUseCases
+) : ViewModel() {
     var bluetoothSocket: BluetoothSocket? = null
 
     private var _isConnected: MutableLiveData<Boolean> = MutableLiveData(false)
@@ -30,7 +27,6 @@ class ControlViewModel : ViewModel() {
 
     private var _text: MutableLiveData<String> = MutableLiveData("")
     val text: LiveData<String> = _text
-
 
 
     fun moveWhileBtnPressed(motionEvent: MotionEvent, position: String): Boolean {
@@ -50,7 +46,8 @@ class ControlViewModel : ViewModel() {
         return true
     }
 
-    fun connect(context: Context, deviceAddress: String) {
+    fun connect(deviceAddress: String) {
+        DEVICE_MAC = deviceAddress
         var connectionSuccess = true
         viewModelScope.executeAsyncTask(
             onPreExecute = {
@@ -59,14 +56,7 @@ class ControlViewModel : ViewModel() {
             doInBackground = {
                 try {
                     if (bluetoothSocket == null || !isConnected.value!!) {
-                        val bluetoothManger =
-                            context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
-                        bluetoothAdapter = bluetoothManger.adapter
-                        val device: BluetoothDevice =
-                            bluetoothAdapter.getRemoteDevice(deviceAddress)
-                        bluetoothSocket = device.createRfcommSocketToServiceRecord(BT_UUID)
-                        bluetoothAdapter.cancelDiscovery()
-                        bluetoothSocket!!.connect()
+                        bluetoothSocket = useCases.connect(deviceAddress)
                     }
                 } catch (e: IOException) {
                     connectionSuccess = false
@@ -87,10 +77,20 @@ class ControlViewModel : ViewModel() {
     private fun sendCommand(command: String) {
         if (bluetoothSocket != null) {
             try {
-                bluetoothSocket!!.outputStream.write(command.toByteArray())
+                useCases.sendCommand(bluetoothSocket!!, command)
             } catch (e: IOException) {
-                Log.d("ttt", "sendCommand: Could Not send command")
-                e.printStackTrace()
+                Log.e("ttt", "sendCommand: ${e.message}")
+                _isConnected.value = false
+            }
+        } else {
+            viewModelScope.launch(Dispatchers.IO) {
+                while (true) {
+                    if (isConnected.value == false) {
+                        connect(DEVICE_MAC)
+                        delay(1000)
+                    }
+
+                }
             }
         }
     }
@@ -126,8 +126,8 @@ class ControlViewModel : ViewModel() {
                     //convert to string
                     readMessage += String(buffer, 0, bytes)
                     _text.value += readMessage
-                    if (_text.value.isNullOrEmpty()){
-                        Log.e("ttt", "receiveData: ${_text.value}", )
+                    if (_text.value.isNullOrEmpty()) {
+                        Log.e("ttt", "receiveData: ${_text.value}")
                     }
                 }
             } catch (ex: Exception) {
@@ -140,12 +140,10 @@ class ControlViewModel : ViewModel() {
     fun disconnect() {
         if (bluetoothSocket != null) {
             try {
-                bluetoothSocket!!.close()
-                bluetoothSocket = null
-                _isConnected.value = false
-
-                Log.d("ttt", "disconnect: Disconnected...")
+                useCases.disconnect(bluetoothSocket!!)
+                Log.d("ttt", "disconnect: Disconnected")
             } catch (e: IOException) {
+                Log.e("ttt", "disconnect: ${e.message}")
                 e.printStackTrace()
             }
         }
