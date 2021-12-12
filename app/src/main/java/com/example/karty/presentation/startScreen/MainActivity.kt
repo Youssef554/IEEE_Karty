@@ -16,7 +16,9 @@ import com.example.karty.presentation.utils.Helpers
 import com.example.karty.R
 import com.example.karty.presentation.controlScreen.ControlActivity
 import com.example.karty.presentation.turnOnBluetoothScreen.TurnOnBluetoothActivity
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var adapter: DevicesAdapter
     private val viewModel: StartScreenViewModel by viewModels()

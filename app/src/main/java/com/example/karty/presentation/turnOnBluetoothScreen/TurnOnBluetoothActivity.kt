@@ -13,7 +13,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.example.karty.R
 import com.example.karty.presentation.startScreen.MainActivity
 import com.example.karty.presentation.utils.Helpers
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class TurnOnBluetoothActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

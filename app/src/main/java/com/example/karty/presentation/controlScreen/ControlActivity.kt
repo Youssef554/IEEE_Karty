@@ -8,8 +8,9 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.karty.R
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class ControlActivity : AppCompatActivity() {
     private val viewModel:ControlViewModel by viewModels()
     private lateinit var deviceAddress:String
