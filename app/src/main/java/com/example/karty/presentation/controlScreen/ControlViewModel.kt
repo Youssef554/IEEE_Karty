@@ -13,7 +13,7 @@ import kotlinx.coroutines.*
 import java.io.IOException
 import javax.inject.Inject
 
-private const val DELAY = 250L
+private const val DELAY = 300L
 private lateinit var DEVICE_MAC: String
 
 @HiltViewModel
@@ -57,6 +57,7 @@ class ControlViewModel @Inject constructor(
                 try {
                     if (bluetoothSocket == null || !isConnected.value!!) {
                         bluetoothSocket = useCases.connect(deviceAddress)
+                        Log.d("ttt", "connect: Connected")
                     }
                 } catch (e: IOException) {
                     connectionSuccess = false
@@ -142,12 +143,11 @@ class ControlViewModel @Inject constructor(
             try {
                 useCases.disconnect(bluetoothSocket!!)
                 Log.d("ttt", "disconnect: Disconnected")
+                _isConnected.value = false
             } catch (e: IOException) {
                 Log.e("ttt", "disconnect: ${e.message}")
                 e.printStackTrace()
             }
         }
     }
-
-
 }
