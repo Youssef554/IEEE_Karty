@@ -25,7 +25,7 @@ class BluetoothConnectUseCase @Inject constructor(private val bluetoothAdapter: 
         } catch (e: IOException) {
             e.printStackTrace()
             //return
-            throw IOException("Did not connect")
+            throw IOException("Did not connect...")
         }
 
     }
