@@ -12,6 +12,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import java.io.IOException
 import javax.inject.Inject
+import kotlin.properties.Delegates
 
 private const val DELAY = 300L
 private lateinit var DEVICE_MAC: String
@@ -79,6 +80,7 @@ class ControlViewModel @Inject constructor(
         if (bluetoothSocket != null) {
             try {
                 useCases.sendCommand(bluetoothSocket!!, command)
+                receiveData()
             } catch (e: IOException) {
                 Log.e("ttt", "sendCommand: ${e.message}")
                 _isConnected.value = false
@@ -96,41 +98,25 @@ class ControlViewModel @Inject constructor(
         }
     }
 
-    //failed experiment
-    /*private fun receiveData(socket: BluetoothSocket?) {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                while (true){
-                    val available = socket!!.inputStream.available()
-                    val bytes = ByteArray(available)
-                    socket.inputStream.read(bytes, 0, available)
-                    val text = String(bytes)
-                    Log.i("server", text)
-                }
-            }catch (e:IOException){
-                e.printStackTrace()
-            }
-        }
-    }*/
-
-    //under construction....
+    //under construction.... somewhat functional
     private fun receiveData() {
         var bytes: Int
         val buffer = ByteArray(1024)
         var readMessage = ""
         if (isConnected.value == true) {
             try {
+                while (!(readMessage.contains(" ;"))) {
+                    Log.e("ttt", "receiveData: fdkngdngmdfngmfdngfdg1")
 
-                while (!(readMessage.contains(';'))) {
                     //read bytes received and ins to buffer
                     bytes = bluetoothSocket!!.inputStream.read(buffer)
                     //convert to string
                     readMessage += String(buffer, 0, bytes)
                     _text.value += readMessage
-                    if (_text.value.isNullOrEmpty()) {
-                        Log.e("ttt", "receiveData: ${_text.value}")
-                    }
+                    Log.d("ttt", "receiveData: ${_text.value}")
+
                 }
+
             } catch (ex: Exception) {
                 ex.printStackTrace()
             }

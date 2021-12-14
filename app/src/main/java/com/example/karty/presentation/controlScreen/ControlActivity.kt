@@ -11,11 +11,17 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.karty.R
 import dagger.hilt.android.AndroidEntryPoint
 
+
+const val MESSAGE_READ: Int = 0
+const val MESSAGE_WRITE: Int = 1
+const val MESSAGE_TOAST: Int = 2
+
 @AndroidEntryPoint
 class ControlActivity : AppCompatActivity() {
     private val viewModel: ControlViewModel by viewModels()
     private lateinit var deviceAddress: String
     private lateinit var deviceName: String
+
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,11 +44,9 @@ class ControlActivity : AppCompatActivity() {
             tv.text = if (it) "Connected" else "Not connected"
         }
 
-
         //movement controls using a custom onTouch listener
         forewordBtn.setOnTouchListener { _, motionEvent ->
             viewModel.moveWhileBtnPressed(motionEvent, "a")
-            Log.d("ttt", "onCreate: $motionEvent")
             true
         }
 
