@@ -106,7 +106,7 @@ class ControlViewModel @Inject constructor(
         if (isConnected.value == true) {
             try {
                 while (!(readMessage.contains(" ;"))) {
-                    Log.e("ttt", "receiveData: fdkngdngmdfngmfdngfdg1")
+                    Log.e("ttt", "receiveData: received data...")
 
                     //read bytes received and ins to buffer
                     bytes = bluetoothSocket!!.inputStream.read(buffer)
