@@ -14,7 +14,7 @@ import java.io.IOException
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
-private const val DELAY = 300L
+private const val DELAY = 900L
 private lateinit var DEVICE_MAC: String
 
 @HiltViewModel
@@ -105,17 +105,15 @@ class ControlViewModel @Inject constructor(
         var message = ""
         if (isConnected.value == true) {
             try {
-                while (!(message.contains(" ;"))) {
-                    Log.e("ttt", "receiveData: received data...")
-
+                while (!(message.contains("[e]"))) {
                     //read bytes received and ins to buffer
                     bytes = bluetoothSocket!!.inputStream.read(buffer)
                     //convert to string
                     message += String(buffer, 0, bytes)
-                    Log.d("ttt", "receiveData: ${_text.value}")
-
                 }
+
                 _text.value = message
+                Log.d("ttt", "receiveData: ${text.value}")
             } catch (ex: Exception) {
                 ex.printStackTrace()
             }
