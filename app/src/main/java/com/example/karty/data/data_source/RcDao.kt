@@ -1,5 +1,6 @@
 package com.example.karty.data.data_source
 
+import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.REPLACE
@@ -7,6 +8,7 @@ import androidx.room.Query
 import com.example.karty.domain.model.RC
 import com.example.karty.domain.model.RcResponse
 
+@Dao
 interface RcDao {
     @Query("SELECT * from rc_table")
     suspend fun getDevices():List<RC>

@@ -12,10 +12,6 @@ import com.example.karty.R
 import dagger.hilt.android.AndroidEntryPoint
 
 
-const val MESSAGE_READ: Int = 0
-const val MESSAGE_WRITE: Int = 1
-const val MESSAGE_TOAST: Int = 2
-
 @AndroidEntryPoint
 class ControlActivity : AppCompatActivity() {
     private val viewModel: ControlViewModel by viewModels()

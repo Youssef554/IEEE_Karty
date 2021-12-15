@@ -7,19 +7,22 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.karty.domain.use_cases.BluetoothUseCases
+import com.example.karty.data.data_source.RcDao
+import com.example.karty.domain.model.RC
+import com.example.karty.domain.use_cases.bluetooth.BluetoothUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import java.io.IOException
 import javax.inject.Inject
-import kotlin.properties.Delegates
 
 private const val DELAY = 900L
 private lateinit var DEVICE_MAC: String
+private var DEVICE_NAME = ""
 
 @HiltViewModel
 class ControlViewModel @Inject constructor(
-    private val useCases: BluetoothUseCases
+    private val useCases: BluetoothUseCases,
+    private val dao: RcDao
 ) : ViewModel() {
     var bluetoothSocket: BluetoothSocket? = null
 
@@ -47,8 +50,11 @@ class ControlViewModel @Inject constructor(
         return true
     }
 
-    fun connect(deviceAddress: String) {
+    fun connect(deviceAddress: String, deviceName: String="") {
         DEVICE_MAC = deviceAddress
+        if (deviceName.isNotEmpty()){
+            DEVICE_NAME = deviceName
+        }
         var connectionSuccess = true
         viewModelScope.executeAsyncTask(
             onPreExecute = {
@@ -120,6 +126,20 @@ class ControlViewModel @Inject constructor(
         }
     }
 
+
+    fun addDeviceToDatabase() {
+        if (DEVICE_NAME.isNotEmpty()){
+            val device = RC(
+                id = 0,
+                deviceName = DEVICE_NAME,
+                deviceAddress = DEVICE_MAC
+            )
+            viewModelScope.launch(Dispatchers.IO){
+                dao.addDevice(device)
+            }
+        }
+
+    }
 
     fun disconnect() {
         if (bluetoothSocket != null) {

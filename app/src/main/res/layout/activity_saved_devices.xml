@@ -6,4 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".presentation.devicesDataScreen.SavedDevicesActivity">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_SavedDevicesList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/item_device" />
 </androidx.constraintlayout.widget.ConstraintLayout>

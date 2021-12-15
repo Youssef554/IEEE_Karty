@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothManager
 import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.karty.data.data_source.RcDao
 import com.example.karty.data.data_source.RcDatabase
 import com.example.karty.domain.use_cases.bluetooth.BluetoothConnectUseCase
 import com.example.karty.domain.use_cases.bluetooth.BluetoothDisconnectUseCase
@@ -14,6 +15,7 @@ import com.example.karty.domain.use_cases.bluetooth.BluetoothUseCases
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -21,14 +23,21 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 class AppModule {
 
-    @Singleton
     @Provides
-    fun provideDatabase(context: Application) =
-        Room.databaseBuilder(context, RoomDatabase::class.java, "rc_database")
-            .fallbackToDestructiveMigration().build()
+    @Singleton
+    fun provideDatabase(@ApplicationContext context: Context): RcDatabase {
+        return Room.databaseBuilder(
+            context,
+            RcDatabase::class.java,
+            "rc_database"
+        ).build()
+
+    }
 
     @Provides
-    fun provideDao(database: RcDatabase) = database.RcDao()
+    fun provideDao(database: RcDatabase): RcDao {
+        return database.RcDao()
+    }
 
     @Provides
     fun provideBluetoothManger(context: Application) =
