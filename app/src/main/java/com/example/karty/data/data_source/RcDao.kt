@@ -13,7 +13,7 @@ interface RcDao {
     @Query("SELECT * from rc_table where deviceAddress = :address")
     suspend fun getDeviceByAddress(address:String):RC
 
-    @Query("SELECT readings from rc_table where deviceAddress = :address")
+    @Query("SELECT * from readings_table where deviceAddress = :address")
     suspend fun getDeviceReadings(address: String):List<RcResponse>
 
     @Insert()
