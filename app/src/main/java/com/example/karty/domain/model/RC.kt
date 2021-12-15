@@ -9,5 +9,4 @@ data class RC(
     val id:Int,
     val deviceName:String,
     val deviceAddress:String,
-    val readings:List<RcResponse>
 )
