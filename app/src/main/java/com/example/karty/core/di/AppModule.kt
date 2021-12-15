@@ -7,10 +7,10 @@ import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.karty.data.data_source.RcDatabase
-import com.example.karty.domain.use_cases.BluetoothConnectUseCase
-import com.example.karty.domain.use_cases.BluetoothDisconnectUseCase
-import com.example.karty.domain.use_cases.BluetoothSendCommandUseCase
-import com.example.karty.domain.use_cases.BluetoothUseCases
+import com.example.karty.domain.use_cases.bluetooth.BluetoothConnectUseCase
+import com.example.karty.domain.use_cases.bluetooth.BluetoothDisconnectUseCase
+import com.example.karty.domain.use_cases.bluetooth.BluetoothSendCommandUseCase
+import com.example.karty.domain.use_cases.bluetooth.BluetoothUseCases
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

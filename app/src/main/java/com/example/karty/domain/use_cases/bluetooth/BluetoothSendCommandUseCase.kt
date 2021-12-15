@@ -1,7 +1,6 @@
-package com.example.karty.domain.use_cases
+package com.example.karty.domain.use_cases.bluetooth
 
 import android.bluetooth.BluetoothSocket
-import android.util.Log
 import java.io.IOException
 
 class BluetoothSendCommandUseCase {

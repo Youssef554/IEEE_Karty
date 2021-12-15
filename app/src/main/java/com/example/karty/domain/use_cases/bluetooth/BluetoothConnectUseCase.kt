@@ -1,8 +1,7 @@
-package com.example.karty.domain.use_cases
+package com.example.karty.domain.use_cases.bluetooth
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothManager
 import android.bluetooth.BluetoothSocket
 import java.io.IOException
 import java.util.*
