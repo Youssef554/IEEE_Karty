@@ -7,6 +7,7 @@
     tools:context=".presentation.readingsScreen.ReadingsActivity">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_ReadingsList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"

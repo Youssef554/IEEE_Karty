@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.karty.R
 import com.example.karty.presentation.controlScreen.ControlActivity
+import com.example.karty.presentation.readingsScreen.ReadingsActivity
 import com.example.karty.presentation.utils.DevicesAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -15,6 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class SavedDevicesActivity : AppCompatActivity() {
     private lateinit var adapter: DevicesAdapter
     private val viewModel: SavedDevicesViewModel by viewModels()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +29,7 @@ class SavedDevicesActivity : AppCompatActivity() {
         val rv: RecyclerView = findViewById(R.id.rv_SavedDevicesList)
 
         setupRecyclerView(rv)
-
+        viewModel.getDevices()
         viewModel.devices.observe(this) {
             adapter.submitList(it)
         }
@@ -37,7 +39,7 @@ class SavedDevicesActivity : AppCompatActivity() {
 
     private fun setupRecyclerView(rv: RecyclerView) {
         adapter = DevicesAdapter() { name, macAddress ->
-            val intent = Intent(this, ControlActivity::class.java)
+            val intent = Intent(this, ReadingsActivity::class.java)
             intent.putExtra("deviceName", name)
             intent.putExtra("macAddress", macAddress)
             startActivity(intent)
