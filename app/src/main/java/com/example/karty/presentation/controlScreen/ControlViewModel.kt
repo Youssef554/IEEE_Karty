@@ -102,21 +102,20 @@ class ControlViewModel @Inject constructor(
     private fun receiveData() {
         var bytes: Int
         val buffer = ByteArray(1024)
-        var readMessage = ""
+        var message = ""
         if (isConnected.value == true) {
             try {
-                while (!(readMessage.contains(" ;"))) {
+                while (!(message.contains(" ;"))) {
                     Log.e("ttt", "receiveData: received data...")
 
                     //read bytes received and ins to buffer
                     bytes = bluetoothSocket!!.inputStream.read(buffer)
                     //convert to string
-                    readMessage += String(buffer, 0, bytes)
-                    _text.value += readMessage
+                    message += String(buffer, 0, bytes)
                     Log.d("ttt", "receiveData: ${_text.value}")
 
                 }
-
+                _text.value = message
             } catch (ex: Exception) {
                 ex.printStackTrace()
             }
