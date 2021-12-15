@@ -16,11 +16,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Karty">
         <activity
+            android:name=".presentation.readingsScreen.ReadingsActivity"
+            android:exported="false" />
+        <activity
             android:name=".presentation.savedDevicesScreen.SavedDevicesActivity"
             android:exported="false"
-            android:parentActivityName=".presentation.startScreen.MainActivity"
-
-            />
+            android:parentActivityName=".presentation.startScreen.MainActivity" />
         <activity
             android:name=".presentation.turnOnBluetoothScreen.TurnOnBluetoothActivity"
             android:exported="true">
