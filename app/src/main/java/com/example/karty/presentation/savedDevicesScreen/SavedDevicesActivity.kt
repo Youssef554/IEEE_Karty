@@ -14,7 +14,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class SavedDevicesActivity : AppCompatActivity() {
     private lateinit var adapter: DevicesAdapter
-    val viewModel: SavedDevicesViewModel by viewModels()
+    private val viewModel: SavedDevicesViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

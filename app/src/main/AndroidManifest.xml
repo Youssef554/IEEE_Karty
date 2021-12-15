@@ -17,7 +17,8 @@
         android:theme="@style/Theme.Karty">
         <activity
             android:name=".presentation.readingsScreen.ReadingsActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".presentation.savedDevicesScreen.SavedDevicesActivity"/>
         <activity
             android:name=".presentation.savedDevicesScreen.SavedDevicesActivity"
             android:exported="false"
