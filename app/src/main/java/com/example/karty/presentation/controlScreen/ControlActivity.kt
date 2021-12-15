@@ -30,7 +30,7 @@ class ControlActivity : AppCompatActivity() {
         deviceName = intent.getStringExtra("deviceName")!!
         supportActionBar?.title = "Control $deviceName"
         deviceAddress = intent.getStringExtra("macAddress")!!
-        viewModel.connect(deviceAddress)
+        viewModel.connect(deviceAddress, deviceName)
 
         //buttons declaration
         val forewordBtn: Button = findViewById(R.id.btn_GoForeword)
