@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/CardMarginH"
+    android:layout_marginTop="@dimen/CardMarginV"
+    android:layout_marginEnd="@dimen/CardMarginH"
+    android:layout_marginBottom="@dimen/CardMarginV">
+
+    <TextView
+        android:id="@+id/tv_ReadingTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="date and time :" />
+
+    <TextView
+        android:id="@+id/tv_LeftMotor"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tv_RightMotor"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tv_ReadingTime"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="left motor reading" />
+
+    <TextView
+        android:id="@+id/tv_RightMotor"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tv_LeftMotor"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="right motor reading" />
+</androidx.constraintlayout.widget.ConstraintLayout>
