@@ -6,6 +6,8 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -15,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.karty.presentation.utils.Helpers
 import com.example.karty.R
 import com.example.karty.presentation.controlScreen.ControlActivity
+import com.example.karty.presentation.devicesDataScreen.SavedDevicesActivity
 import com.example.karty.presentation.turnOnBluetoothScreen.TurnOnBluetoothActivity
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -51,6 +54,23 @@ class MainActivity : AppCompatActivity() {
         }
         rv.layoutManager = LinearLayoutManager(this)
         rv.adapter = adapter
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_main_screen, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.btn_SavedDevices ->{
+                val intent = Intent(this, SavedDevicesActivity::class.java)
+                startActivity(intent)
+            }
+            else -> {}
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 }
