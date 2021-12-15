@@ -3,14 +3,12 @@ package com.example.karty.presentation.savedDevicesScreen
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.MenuItem
 import androidx.activity.viewModels
-import androidx.core.app.NavUtils
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.karty.R
 import com.example.karty.presentation.controlScreen.ControlActivity
-import com.example.karty.presentation.startScreen.DevicesAdapter
+import com.example.karty.presentation.utils.DevicesAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

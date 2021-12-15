@@ -22,4 +22,9 @@ object Helpers {
         btn.visibility = if (state) Button.VISIBLE else Button.GONE
 
     }
+
+    enum class AdapterClickActionType{
+        NORMAL_CLICK,
+        DATABASE_CLICK
+    }
 }

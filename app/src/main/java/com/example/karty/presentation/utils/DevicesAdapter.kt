@@ -1,6 +1,5 @@
-package com.example.karty.presentation.startScreen
+package com.example.karty.presentation.utils
 
-import android.bluetooth.BluetoothDevice
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
