@@ -5,8 +5,8 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "rc_table")
 data class RC(
-    @PrimaryKey(autoGenerate = true)
-    val id:Int,
-    val deviceName:String,
-    val deviceAddress:String,
-)
+    @PrimaryKey(autoGenerate = false)
+    val deviceAddress: String,
+    val deviceName: String,
+
+    )

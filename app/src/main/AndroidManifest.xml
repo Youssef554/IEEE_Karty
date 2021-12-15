@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Karty">
         <activity
-            android:name=".presentation.devicesDataScreen.SavedDevicesActivity"
+            android:name=".presentation.savedDevicesScreen.SavedDevicesActivity"
             android:exported="false" />
         <activity
             android:name=".presentation.turnOnBluetoothScreen.TurnOnBluetoothActivity"

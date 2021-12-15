@@ -8,17 +8,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Button
-import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.karty.presentation.utils.Helpers
 import com.example.karty.R
+import com.example.karty.domain.model.RC
 import com.example.karty.presentation.controlScreen.ControlActivity
-import com.example.karty.presentation.devicesDataScreen.SavedDevicesActivity
-import com.example.karty.presentation.turnOnBluetoothScreen.TurnOnBluetoothActivity
+import com.example.karty.presentation.savedDevicesScreen.SavedDevicesActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -36,9 +32,15 @@ class MainActivity : AppCompatActivity() {
         val bluetoothAdapter: BluetoothAdapter? = bluetoothManger.adapter
 
         if (bluetoothAdapter?.isEnabled == true) {
-            val devices = bluetoothAdapter.bondedDevices
+            val btDevices = bluetoothAdapter.bondedDevices
             setupRecyclerView(devicesRecyclerView)
-            adapter.submitList(devices?.toList())
+            val devices:MutableList<RC> = mutableListOf()
+            btDevices.forEach {
+                devices.add(
+                    RC(deviceName = it.name, deviceAddress = it.address)
+                )
+            }
+            adapter.submitList(devices)
         }
 
 

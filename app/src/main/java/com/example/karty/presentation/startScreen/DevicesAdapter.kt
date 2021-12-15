@@ -10,12 +10,13 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.karty.R
+import com.example.karty.domain.model.RC
 
 
 //the adapter is working fine don't mess with this file....
 class DevicesAdapter(
     val onItemClick:(name:String, macAddress:String) -> Unit
-): ListAdapter<BluetoothDevice, DevicesAdapter.DeviceViewHolder>( DevicesDiff() ) {
+): ListAdapter<RC, DevicesAdapter.DeviceViewHolder>( DevicesDiff() ) {
     inner class DeviceViewHolder(itemView: View) :RecyclerView.ViewHolder(itemView){
         val card :CardView = itemView.findViewById(R.id.dc_DeviceCard)
         val name: TextView = itemView.findViewById(R.id.tv_DeviceName)
@@ -29,8 +30,8 @@ class DevicesAdapter(
     }
 
     override fun onBindViewHolder(holder: DeviceViewHolder, position: Int) {
-        val name = getItem(position).name
-        val macAddress = getItem(position).address
+        val name = getItem(position).deviceName
+        val macAddress = getItem(position).deviceAddress
         holder.name.text = name
         holder.macAddress.text = macAddress
         holder.card.setOnClickListener {
@@ -39,12 +40,12 @@ class DevicesAdapter(
     }
 }
 
-class DevicesDiff:DiffUtil.ItemCallback<BluetoothDevice>(){
-    override fun areItemsTheSame(oldItem: BluetoothDevice, newItem: BluetoothDevice): Boolean {
-        return oldItem.address == newItem.address
+class DevicesDiff:DiffUtil.ItemCallback<RC>(){
+    override fun areItemsTheSame(oldItem: RC, newItem: RC): Boolean {
+        return oldItem.deviceAddress == newItem.deviceAddress
     }
 
-    override fun areContentsTheSame(oldItem: BluetoothDevice, newItem: BluetoothDevice): Boolean {
+    override fun areContentsTheSame(oldItem: RC, newItem: RC): Boolean {
         return oldItem == newItem
     }
 

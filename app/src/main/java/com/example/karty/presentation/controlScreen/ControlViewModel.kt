@@ -77,6 +77,7 @@ class ControlViewModel @Inject constructor(
                     Log.d("ttt", "connect: Could not connect")
                 } else {
                     _isConnected.value = true
+                    addDeviceToDatabase()
                 }
             }
         )
@@ -130,7 +131,6 @@ class ControlViewModel @Inject constructor(
     fun addDeviceToDatabase() {
         if (DEVICE_NAME.isNotEmpty()){
             val device = RC(
-                id = 0,
                 deviceName = DEVICE_NAME,
                 deviceAddress = DEVICE_MAC
             )
