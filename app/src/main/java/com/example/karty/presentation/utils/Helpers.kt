@@ -1,5 +1,6 @@
 package com.example.karty.presentation.utils
 
+import android.util.Log
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -23,6 +24,19 @@ object Helpers {
 
     }
 
+    fun String.filterBluetoothMessages():List<Int>{
+        //moving left
+        if (this.contains("left motor is moving left in low speed ")){
+            return listOf(1, 5)
+        }else if (this.contains("left motor is moving right in full speed")){
+            return listOf(5, 1)
+        }else if (this.contains("two motors are moving forward in full speed")){
+            return listOf(5,5)
+        }else{
+            return listOf(-5, -5)
+        }
+    }
+    
     enum class AdapterClickActionType{
         NORMAL_CLICK,
         DATABASE_CLICK

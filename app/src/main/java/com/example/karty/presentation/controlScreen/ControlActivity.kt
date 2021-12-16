@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.karty.R
+import com.example.karty.presentation.utils.Helpers.filterBluetoothMessages
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -57,8 +58,14 @@ class ControlActivity : AppCompatActivity() {
         leftBtn.setOnTouchListener { _, motionEvent ->
             viewModel.moveWhileBtnPressed(motionEvent, "d")
         }
-    }
 
+        viewModel.text.observe(this) {
+            if (it.isNotEmpty()) {
+
+            }
+        }
+
+    }
 
 
     //to disconnect in the case of the app closing.

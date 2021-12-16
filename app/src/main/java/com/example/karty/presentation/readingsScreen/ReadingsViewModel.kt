@@ -1,5 +1,6 @@
 package com.example.karty.presentation.readingsScreen
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -24,6 +25,7 @@ class ReadingsViewModel @Inject constructor(private val dao: RcDao) : ViewModel(
         DEVICE_MAC = deviceAddress
         viewModelScope.launch {
             _readings.value = dao.getDeviceReadings(DEVICE_MAC)
+            Log.e("ttt", "getReadings: ${_readings.value}", )
         }
     }
 }

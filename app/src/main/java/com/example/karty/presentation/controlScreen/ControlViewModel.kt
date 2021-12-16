@@ -9,7 +9,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.karty.data.data_source.RcDao
 import com.example.karty.domain.model.RC
+import com.example.karty.domain.model.RcResponse
 import com.example.karty.domain.use_cases.bluetooth.BluetoothUseCases
+import com.example.karty.presentation.utils.Helpers.filterBluetoothMessages
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import java.io.IOException
@@ -118,7 +120,8 @@ class ControlViewModel @Inject constructor(
                     //convert to string
                     message += String(buffer, 0, bytes)
                 }
-
+                val movements = message.filterBluetoothMessages()
+                addReadingsToDatabase(DEVICE_MAC, movements[0], movements[1])
                 _text.value = message
                 Log.d("ttt", "receiveData: ${text.value}")
             } catch (ex: Exception) {
@@ -128,7 +131,7 @@ class ControlViewModel @Inject constructor(
     }
 
 
-    fun addDeviceToDatabase() {
+    private fun addDeviceToDatabase() {
         if (DEVICE_NAME.isNotEmpty()){
             val device = RC(
                 deviceName = DEVICE_NAME,
@@ -139,6 +142,13 @@ class ControlViewModel @Inject constructor(
             }
         }
 
+    }
+
+    fun addReadingsToDatabase(deviceAddress: String,leftMotor:Int, rightMotor:Int){
+        viewModelScope.launch(Dispatchers.IO) {
+            val reading = RcResponse(0,deviceAddress= deviceAddress, motorLeft = leftMotor, motorRight = rightMotor)
+            dao.addReading(reading)
+        }
     }
 
     fun disconnect() {

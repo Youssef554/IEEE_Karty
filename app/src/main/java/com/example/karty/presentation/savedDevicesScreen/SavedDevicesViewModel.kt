@@ -25,8 +25,6 @@ class SavedDevicesViewModel @Inject constructor(private val dao: RcDao) : ViewMo
 
     fun getDevices() {
         viewModelScope.launch {
-
-
             _devices.value = dao.getDevices()
         }
     }

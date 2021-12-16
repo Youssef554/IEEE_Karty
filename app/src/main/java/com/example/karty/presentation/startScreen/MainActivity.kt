@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
                     RC(deviceName = it.name, deviceAddress = it.address)
                 )
             }
-            adapter.submitList(devices)
+            adapter.submitList(devices.reversed())//to get the latest first
         }
 
 

@@ -7,9 +7,10 @@ import java.util.*
 
 @Entity(tableName = "readings_table")
 data class RcResponse(
-    @PrimaryKey(autoGenerate = false)
-    val deviceAddress:String,
+    @PrimaryKey(autoGenerate = true)
+    val id:Int,
     val time: Long = System.currentTimeMillis(),
+    val deviceAddress:String,
     val dateTime:String = SimpleDateFormat("dd/M/yyyy hh:mm:ss", Locale.getDefault()).format(Date()),
     val motorRight:Int,
     val motorLeft: Int
