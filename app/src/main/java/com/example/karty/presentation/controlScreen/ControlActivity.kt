@@ -2,14 +2,13 @@ package com.example.karty.presentation.controlScreen
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
 import com.example.karty.R
-import com.example.karty.presentation.utils.Helpers.filterBluetoothMessages
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -29,11 +28,13 @@ class ControlActivity : AppCompatActivity() {
         deviceAddress = intent.getStringExtra("macAddress")!!
         viewModel.connect(deviceAddress, deviceName)
 
-        //buttons declaration
+        //Declarations
+        val isDataSavedSwitch: SwitchCompat = findViewById(R.id.sw_IsDataSaved)
         val forewordBtn: Button = findViewById(R.id.btn_GoForeword)
         val backwardBtn: Button = findViewById(R.id.btn_GoBackward)
         val rightBtn: Button = findViewById(R.id.btn_GoRight)
         val leftBtn: Button = findViewById(R.id.btn_GoLeft)
+        setupDatabaseSwitch(isDataSavedSwitch)
 
         //monitor is connected or not
         viewModel.isConnected.observe(this) {
@@ -67,6 +68,24 @@ class ControlActivity : AppCompatActivity() {
 
     }
 
+    private fun setupDatabaseSwitch(isDataSavedSwitch: SwitchCompat) {
+        viewModel.isLoggingEnabled.observe(this){
+            isDataSavedSwitch.isChecked = it
+
+        }
+
+        isDataSavedSwitch.setOnCheckedChangeListener { _, isChecked: Boolean ->
+            if (isChecked) {
+                Toast.makeText(
+                    this,
+                    "Data is saved to the database the app may be slow",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            viewModel.changeIsDataLogged(isChecked)
+        }
+
+    }
 
     //to disconnect in the case of the app closing.
     override fun onDestroy() {

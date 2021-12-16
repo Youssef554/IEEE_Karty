@@ -12,6 +12,7 @@ import com.example.karty.domain.use_cases.bluetooth.BluetoothConnectUseCase
 import com.example.karty.domain.use_cases.bluetooth.BluetoothDisconnectUseCase
 import com.example.karty.domain.use_cases.bluetooth.BluetoothSendCommandUseCase
 import com.example.karty.domain.use_cases.bluetooth.BluetoothUseCases
+import com.example.karty.presentation.utils.SharedPresManger
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -38,6 +39,10 @@ class AppModule {
     fun provideDao(database: RcDatabase): RcDao {
         return database.RcDao()
     }
+
+
+    @Provides
+    fun provideSharedPrefs(@ApplicationContext context: Context) = SharedPresManger(context)
 
     @Provides
     fun provideBluetoothManger(context: Application) =

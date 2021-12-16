@@ -12,6 +12,7 @@ import com.example.karty.domain.model.RC
 import com.example.karty.domain.model.RcResponse
 import com.example.karty.domain.use_cases.bluetooth.BluetoothUseCases
 import com.example.karty.presentation.utils.Helpers.filterBluetoothMessages
+import com.example.karty.presentation.utils.SharedPresManger
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import java.io.IOException
@@ -24,16 +25,27 @@ private var DEVICE_NAME = ""
 @HiltViewModel
 class ControlViewModel @Inject constructor(
     private val useCases: BluetoothUseCases,
-    private val dao: RcDao
+    private val dao: RcDao,
+    private val sharedPresManger: SharedPresManger
 ) : ViewModel() {
     var bluetoothSocket: BluetoothSocket? = null
 
     private var _isConnected: MutableLiveData<Boolean> = MutableLiveData(false)
     val isConnected: LiveData<Boolean> = _isConnected
 
+    private var _isLoggingEnabled:MutableLiveData<Boolean> = MutableLiveData(true)
+    val isLoggingEnabled:LiveData<Boolean> = _isLoggingEnabled
+
     private var _text: MutableLiveData<String> = MutableLiveData("")
     val text: LiveData<String> = _text
 
+
+    init {
+        val sharedPres = sharedPresManger.getSharedPref()
+        if (sharedPres != null){
+            _isLoggingEnabled.value = sharedPres.getBoolean("is_data_logged", false)
+        }
+    }
 
     fun moveWhileBtnPressed(motionEvent: MotionEvent, position: String): Boolean {
         if (motionEvent.action == MotionEvent.ACTION_DOWN) {
@@ -121,7 +133,9 @@ class ControlViewModel @Inject constructor(
                     message += String(buffer, 0, bytes)
                 }
                 val movements = message.filterBluetoothMessages()
-                addReadingsToDatabase(DEVICE_MAC, movements[0], movements[1])
+                if (isLoggingEnabled.value == true){
+                    addReadingsToDatabase(DEVICE_MAC, movements[0], movements[1])
+                }
                 _text.value = message
                 Log.d("ttt", "receiveData: ${text.value}")
             } catch (ex: Exception) {
@@ -144,12 +158,23 @@ class ControlViewModel @Inject constructor(
 
     }
 
-    fun addReadingsToDatabase(deviceAddress: String,leftMotor:Int, rightMotor:Int){
+    private fun addReadingsToDatabase(deviceAddress: String, leftMotor:Int, rightMotor:Int){
         viewModelScope.launch(Dispatchers.IO) {
             val reading = RcResponse(0,deviceAddress= deviceAddress, motorLeft = leftMotor, motorRight = rightMotor)
             dao.addReading(reading)
         }
     }
+
+    fun changeIsDataLogged(isSaved: Boolean){
+        _isLoggingEnabled.value = isSaved
+        val sharedPrefs = sharedPresManger.getSharedPref()
+        if (sharedPrefs != null){
+            val editor = sharedPrefs.edit()
+            editor.putBoolean("is_data_logged", isSaved)
+            editor.apply()
+        }
+    }
+
 
     fun disconnect() {
         if (bluetoothSocket != null) {
