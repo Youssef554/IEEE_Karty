@@ -1,17 +1,13 @@
 package com.example.karty.presentation.readingsScreen
 
 import android.Manifest
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -69,7 +65,7 @@ class ReadingsActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.btn_ShareDatabae -> {
+            R.id.btn_SaveDatabase -> {
                 exportData()
             }
         }
@@ -83,6 +79,7 @@ private fun exportData(){
             "readings.txt"
         )
         viewModel.exportReadings(f)
+        Toast.makeText(this, "data saved to reading.txt", Toast.LENGTH_SHORT).show()
     }else{
         requestStoragePermission()
     }
