@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Karty</string>
+    <string name="shared_prefs">Settings</string>
 </resources>
