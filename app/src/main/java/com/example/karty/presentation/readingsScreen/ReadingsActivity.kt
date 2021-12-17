@@ -79,7 +79,7 @@ private fun exportData(){
             "readings.txt"
         )
         viewModel.exportReadings(f)
-        Toast.makeText(this, "data saved to reading.txt", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "data saved to readings.txt", Toast.LENGTH_SHORT).show()
     }else{
         requestStoragePermission()
     }
