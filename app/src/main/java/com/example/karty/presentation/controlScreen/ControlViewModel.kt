@@ -33,17 +33,18 @@ class ControlViewModel @Inject constructor(
     private var _isConnected: MutableLiveData<Boolean> = MutableLiveData(false)
     val isConnected: LiveData<Boolean> = _isConnected
 
-    private var _isLoggingEnabled:MutableLiveData<Boolean> = MutableLiveData(true)
-    val isLoggingEnabled:LiveData<Boolean> = _isLoggingEnabled
+    private var _isLoggingEnabled: MutableLiveData<Boolean> = MutableLiveData(true)
+    val isLoggingEnabled: LiveData<Boolean> = _isLoggingEnabled
 
-    private var _response: MutableLiveData<MutableList<String>> = MutableLiveData(mutableListOf())
-    val response: LiveData<MutableList<String>> = _response
+    private var _response: MutableLiveData<MutableList<RcResponse>> =
+        MutableLiveData(mutableListOf())
+    val response: LiveData<MutableList<RcResponse>> = _response
 
 
     //get the sharedPref Settings
     init {
         val sharedPres = sharedPresManger.getSharedPref()
-        if (sharedPres != null){
+        if (sharedPres != null) {
             _isLoggingEnabled.value = sharedPres.getBoolean("is_data_logged", false)
         }
     }
@@ -65,9 +66,9 @@ class ControlViewModel @Inject constructor(
         return true
     }
 
-    fun connect(deviceAddress: String, deviceName: String="") {
+    fun connect(deviceAddress: String, deviceName: String = "") {
         DEVICE_MAC = deviceAddress
-        if (deviceName.isNotEmpty()){
+        if (deviceName.isNotEmpty()) {
             DEVICE_NAME = deviceName
         }
         var connectionSuccess = true
@@ -134,49 +135,74 @@ class ControlViewModel @Inject constructor(
                     message += String(buffer, 0, bytes)
                 }
                 val movements = message.filterBluetoothMessages()
-                if (isLoggingEnabled.value == true){
-                    addReadingsToDatabase(message.trim().removeSuffix("[e]"), DEVICE_MAC, movements[0], movements[1])
+                if (isLoggingEnabled.value == true) {
+                    addReadingsToDatabase(
+                        message.trim().removeSuffix("[e]"),
+                        DEVICE_MAC,
+                        movements[0],
+                        movements[1]
+                    )
                 }
+                //add the data to the adapter.
                 addToDataMonitor(message.trim().removeSuffix("[e]"))
-                Log.d("ttt", "receiveData: ${response.value?.size}")
             } catch (ex: Exception) {
                 ex.printStackTrace()
             }
         }
     }
 
-
-    private fun addToDataMonitor(msg:String){
-        if (_response.value != null){
+    private fun addToDataMonitor(msg: String) {
+        if (_response.value != null) {
             val l = _response.value
-            l?.add(msg)
+            l?.add(
+                RcResponse(
+                    id = 0,
+                    msg = msg,
+                    motorRight = 0,
+                    motorLeft = 0,
+                    deviceAddress = ""
+                )
+            )
             _response.value = l
+
         }
     }
+
     private fun addDeviceToDatabase() {
-        if (DEVICE_NAME.isNotEmpty()){
+        if (DEVICE_NAME.isNotEmpty()) {
             val device = RC(
                 deviceName = DEVICE_NAME,
                 deviceAddress = DEVICE_MAC
             )
-            viewModelScope.launch(Dispatchers.IO){
+            viewModelScope.launch(Dispatchers.IO) {
                 dao.addDevice(device)
             }
         }
 
     }
 
-    private fun addReadingsToDatabase(msg: String,deviceAddress: String, leftMotor:Int, rightMotor:Int){
+    private fun addReadingsToDatabase(
+        msg: String,
+        deviceAddress: String,
+        leftMotor: Int,
+        rightMotor: Int
+    ) {
         viewModelScope.launch(Dispatchers.IO) {
-            val reading = RcResponse(0,deviceAddress= deviceAddress, motorLeft = leftMotor, motorRight = rightMotor, msg = msg)
+            val reading = RcResponse(
+                0,
+                deviceAddress = deviceAddress,
+                motorLeft = leftMotor,
+                motorRight = rightMotor,
+                msg = msg
+            )
             dao.addReading(reading)
         }
     }
 
-    fun changeIsDataLogged(isSaved: Boolean){
+    fun changeIsDataLogged(isSaved: Boolean) {
         _isLoggingEnabled.value = isSaved
         val sharedPrefs = sharedPresManger.getSharedPref()
-        if (sharedPrefs != null){
+        if (sharedPrefs != null) {
             val editor = sharedPrefs.edit()
             editor.putBoolean("is_data_logged", isSaved)
             editor.apply()

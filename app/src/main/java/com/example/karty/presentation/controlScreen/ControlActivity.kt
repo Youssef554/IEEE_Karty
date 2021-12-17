@@ -9,8 +9,13 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.karty.R
+import com.example.karty.presentation.utils.adapters.DataMonitorAdapter
+import com.example.karty.presentation.utils.adapters.ReadingsAdapter
 import dagger.hilt.android.AndroidEntryPoint
+import java.lang.Exception
 
 
 @AndroidEntryPoint
@@ -18,6 +23,7 @@ class ControlActivity : AppCompatActivity() {
     private val viewModel: ControlViewModel by viewModels()
     private lateinit var deviceAddress: String
     private lateinit var deviceName: String
+    private lateinit var adapter: DataMonitorAdapter
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -31,12 +37,13 @@ class ControlActivity : AppCompatActivity() {
 
         //Declarations
         val isDataSavedSwitch: SwitchCompat = findViewById(R.id.sw_IsDataSaved)
-        val responseTextView:TextView = findViewById(R.id.tv_Response)
+        val responseRV: RecyclerView = findViewById(R.id.rv_DataMonitor)
         val forewordBtn: Button = findViewById(R.id.btn_GoForeword)
         val backwardBtn: Button = findViewById(R.id.btn_GoBackward)
         val rightBtn: Button = findViewById(R.id.btn_GoRight)
         val leftBtn: Button = findViewById(R.id.btn_GoLeft)
         setupDatabaseSwitch(isDataSavedSwitch)
+        setupRecyclerView(responseRV)
 
         //monitor is connected or not
         viewModel.isConnected.observe(this) {
@@ -44,13 +51,14 @@ class ControlActivity : AppCompatActivity() {
             tv.text = if (it) "Connected" else "Not connected"
         }
 
-        viewModel.response.observe(this){
-            Log.d("ttt", "onCreate: jkhxfvjhbdshvbjhdsbcv")
-            if (it.size > 0 ){
-                responseTextView.text = it.toString()
-            }else{
-                responseTextView.text = "NaN"
+        viewModel.response.observe(this) {
+            adapter.submitList(it)
+            adapter.notifyDataSetChanged()
+            if (it.size > 0){
+                responseRV.smoothScrollToPosition(it.count()-1)
             }
+
+            Log.e("ttt", "onCreate: jsfkjdkfjhdkjfhkjdshf ${it.size}")
         }
 
 
@@ -72,16 +80,17 @@ class ControlActivity : AppCompatActivity() {
             viewModel.moveWhileBtnPressed(motionEvent, "d")
         }
 
-        viewModel.response.observe(this) {
-            if (it.isNotEmpty()) {
+    }
 
-            }
-        }
+    private fun setupRecyclerView(rv: RecyclerView) {
+        adapter = DataMonitorAdapter()
 
+        rv.layoutManager = LinearLayoutManager(this)
+        rv.adapter = adapter
     }
 
     private fun setupDatabaseSwitch(isDataSavedSwitch: SwitchCompat) {
-        viewModel.isLoggingEnabled.observe(this){
+        viewModel.isLoggingEnabled.observe(this) {
             isDataSavedSwitch.isChecked = it
 
         }

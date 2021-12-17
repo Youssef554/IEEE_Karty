@@ -11,14 +11,14 @@ import com.example.karty.R
 import com.example.karty.domain.model.RcResponse
 
 //the adapter is working fine don't mess with this file....
-class DataMonitorAdapter(): ListAdapter<RcResponse, DataMonitorAdapter.DataMonitorViewHolder>( DataMonitorDiff() ) {
+class DataMonitorAdapter: ListAdapter<RcResponse, DataMonitorAdapter.DataMonitorViewHolder>( DataMonitorDiff() ) {
 
     inner class DataMonitorViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val tv:TextView = itemView.findViewById(R.id.tv_DataMonitorItem)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DataMonitorViewHolder {
-        val inflater = LayoutInflater.from(parent.context).inflate(R.layout.item_motor_reading, parent, false)
+        val inflater = LayoutInflater.from(parent.context).inflate(R.layout.item_data_monitor, parent, false)
 
         return DataMonitorViewHolder(inflater)
     }
@@ -32,11 +32,11 @@ class DataMonitorAdapter(): ListAdapter<RcResponse, DataMonitorAdapter.DataMonit
 
 class DataMonitorDiff: DiffUtil.ItemCallback<RcResponse>(){
     override fun areItemsTheSame(oldItem: RcResponse, newItem: RcResponse): Boolean {
-        return oldItem.dateTime == newItem.dateTime
+        return false
     }
 
     override fun areContentsTheSame(oldItem: RcResponse, newItem: RcResponse): Boolean {
-        return oldItem == newItem
+        return false
     }
 
 }
