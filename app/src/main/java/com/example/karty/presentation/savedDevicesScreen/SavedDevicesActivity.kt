@@ -7,9 +7,8 @@ import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.karty.R
-import com.example.karty.presentation.controlScreen.ControlActivity
 import com.example.karty.presentation.readingsScreen.ReadingsActivity
-import com.example.karty.presentation.utils.DevicesAdapter
+import com.example.karty.presentation.utils.adapters.DevicesAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

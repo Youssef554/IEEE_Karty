@@ -36,10 +36,11 @@ class ControlViewModel @Inject constructor(
     private var _isLoggingEnabled:MutableLiveData<Boolean> = MutableLiveData(true)
     val isLoggingEnabled:LiveData<Boolean> = _isLoggingEnabled
 
-    private var _text: MutableLiveData<String> = MutableLiveData("")
-    val text: LiveData<String> = _text
+    private var _response: MutableLiveData<MutableList<String>> = MutableLiveData(mutableListOf())
+    val response: LiveData<MutableList<String>> = _response
 
 
+    //get the sharedPref Settings
     init {
         val sharedPres = sharedPresManger.getSharedPref()
         if (sharedPres != null){
@@ -134,10 +135,10 @@ class ControlViewModel @Inject constructor(
                 }
                 val movements = message.filterBluetoothMessages()
                 if (isLoggingEnabled.value == true){
-                    addReadingsToDatabase(DEVICE_MAC, movements[0], movements[1])
+                    addReadingsToDatabase(message.trim().removeSuffix("[e]"), DEVICE_MAC, movements[0], movements[1])
                 }
-                _text.value = message
-                Log.d("ttt", "receiveData: ${text.value}")
+                addToDataMonitor(message.trim().removeSuffix("[e]"))
+                Log.d("ttt", "receiveData: ${response.value?.size}")
             } catch (ex: Exception) {
                 ex.printStackTrace()
             }
@@ -145,6 +146,13 @@ class ControlViewModel @Inject constructor(
     }
 
 
+    private fun addToDataMonitor(msg:String){
+        if (_response.value != null){
+            val l = _response.value
+            l?.add(msg)
+            _response.value = l
+        }
+    }
     private fun addDeviceToDatabase() {
         if (DEVICE_NAME.isNotEmpty()){
             val device = RC(
@@ -158,9 +166,9 @@ class ControlViewModel @Inject constructor(
 
     }
 
-    private fun addReadingsToDatabase(deviceAddress: String, leftMotor:Int, rightMotor:Int){
+    private fun addReadingsToDatabase(msg: String,deviceAddress: String, leftMotor:Int, rightMotor:Int){
         viewModelScope.launch(Dispatchers.IO) {
-            val reading = RcResponse(0,deviceAddress= deviceAddress, motorLeft = leftMotor, motorRight = rightMotor)
+            val reading = RcResponse(0,deviceAddress= deviceAddress, motorLeft = leftMotor, motorRight = rightMotor, msg = msg)
             dao.addReading(reading)
         }
     }

@@ -13,7 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.karty.R
-import com.example.karty.presentation.utils.ReadingsAdapter
+import com.example.karty.presentation.utils.adapters.ReadingsAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 

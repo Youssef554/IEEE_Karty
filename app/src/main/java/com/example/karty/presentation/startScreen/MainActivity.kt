@@ -15,7 +15,7 @@ import com.example.karty.R
 import com.example.karty.domain.model.RC
 import com.example.karty.presentation.controlScreen.ControlActivity
 import com.example.karty.presentation.savedDevicesScreen.SavedDevicesActivity
-import com.example.karty.presentation.utils.DevicesAdapter
+import com.example.karty.presentation.utils.adapters.DevicesAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

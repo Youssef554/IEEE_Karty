@@ -2,6 +2,7 @@ package com.example.karty.presentation.controlScreen
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -30,6 +31,7 @@ class ControlActivity : AppCompatActivity() {
 
         //Declarations
         val isDataSavedSwitch: SwitchCompat = findViewById(R.id.sw_IsDataSaved)
+        val responseTextView:TextView = findViewById(R.id.tv_Response)
         val forewordBtn: Button = findViewById(R.id.btn_GoForeword)
         val backwardBtn: Button = findViewById(R.id.btn_GoBackward)
         val rightBtn: Button = findViewById(R.id.btn_GoRight)
@@ -41,6 +43,16 @@ class ControlActivity : AppCompatActivity() {
             val tv: TextView = findViewById(R.id.tv_IsConnected)
             tv.text = if (it) "Connected" else "Not connected"
         }
+
+        viewModel.response.observe(this){
+            Log.d("ttt", "onCreate: jkhxfvjhbdshvbjhdsbcv")
+            if (it.size > 0 ){
+                responseTextView.text = it.toString()
+            }else{
+                responseTextView.text = "NaN"
+            }
+        }
+
 
         //movement controls using a custom onTouch listener
         forewordBtn.setOnTouchListener { _, motionEvent ->
@@ -60,7 +72,7 @@ class ControlActivity : AppCompatActivity() {
             viewModel.moveWhileBtnPressed(motionEvent, "d")
         }
 
-        viewModel.text.observe(this) {
+        viewModel.response.observe(this) {
             if (it.isNotEmpty()) {
 
             }

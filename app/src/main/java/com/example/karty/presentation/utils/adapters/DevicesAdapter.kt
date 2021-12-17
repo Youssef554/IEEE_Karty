@@ -1,4 +1,4 @@
-package com.example.karty.presentation.utils
+package com.example.karty.presentation.utils.adapters
 
 import android.view.LayoutInflater
 import android.view.View
