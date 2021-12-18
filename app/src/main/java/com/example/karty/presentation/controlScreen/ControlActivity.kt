@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -38,6 +39,7 @@ class ControlActivity : AppCompatActivity() {
         //Declarations
         val isDataSavedSwitch: SwitchCompat = findViewById(R.id.sw_IsDataSaved)
         val responseRV: RecyclerView = findViewById(R.id.rv_DataMonitor)
+        val stopBtn:Button = findViewById(R.id.btn_Stop)
         val forewordBtn: Button = findViewById(R.id.btn_GoForeword)
         val backwardBtn: Button = findViewById(R.id.btn_GoBackward)
         val rightBtn: Button = findViewById(R.id.btn_GoRight)
@@ -63,21 +65,32 @@ class ControlActivity : AppCompatActivity() {
 
 
         //movement controls using a custom onTouch listener
-        forewordBtn.setOnTouchListener { _, motionEvent ->
-            viewModel.moveWhileBtnPressed(motionEvent, "a")
+        forewordBtn.setOnClickListener {
+            Log.d("ttt", "onCreate: moving foreword")
+            viewModel.move("a")
+        }
+        backwardBtn.setOnClickListener {
+            Log.d("ttt", "onCreate: moving backward")
+            viewModel.move("c")
+        }
+        rightBtn.setOnClickListener {
+            Log.d("ttt", "onCreate: moving right")
+            viewModel.move("b")
+        }
+        leftBtn.setOnClickListener {
+            Log.d("ttt", "onCreate: moving left")
+            viewModel.move("d")
+        }
+
+        //long press to move foreword fast
+        forewordBtn.setOnLongClickListener {
+            viewModel.move("f")
             true
         }
-
-        rightBtn.setOnTouchListener { _, motionEvent ->
-            viewModel.moveWhileBtnPressed(motionEvent, "b")
-        }
-
-        backwardBtn.setOnTouchListener { _, motionEvent ->
-            viewModel.moveWhileBtnPressed(motionEvent, "c")
-        }
-
-        leftBtn.setOnTouchListener { _, motionEvent ->
-            viewModel.moveWhileBtnPressed(motionEvent, "d")
+        //stop button
+        stopBtn.setOnClickListener {
+            Log.d("ttt", "onCreate: car stopping")
+            viewModel.sendCommand("e")
         }
 
     }
