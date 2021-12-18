@@ -85,6 +85,7 @@ class ControlActivity : AppCompatActivity() {
         //long press to move foreword fast
         forewordBtn.setOnLongClickListener {
             viewModel.move("f")
+            Toast.makeText(this, "Max Speed", Toast.LENGTH_SHORT).show()
             true
         }
         //stop button
