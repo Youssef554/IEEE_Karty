@@ -75,11 +75,11 @@ class ControlActivity : AppCompatActivity() {
         }
         rightBtn.setOnClickListener {
             Log.d("ttt", "onCreate: moving right")
-            viewModel.move("b")
+            viewModel.move("d")
         }
         leftBtn.setOnClickListener {
             Log.d("ttt", "onCreate: moving left")
-            viewModel.move("d")
+            viewModel.move("b")
         }
 
         //long press to move foreword fast
