@@ -49,6 +49,8 @@ class ControlViewModel @Inject constructor(
         }
     }
 
+
+    //will not be used
     fun moveWhileBtnPressed(motionEvent: MotionEvent, position: String): Boolean {
         if (motionEvent.action == MotionEvent.ACTION_DOWN) {
             val job = Job()
@@ -66,6 +68,11 @@ class ControlViewModel @Inject constructor(
         return true
     }
 
+    fun move(direction: String){
+        viewModelScope.launch {
+            sendCommand(direction)
+        }
+    }
     fun connect(deviceAddress: String, deviceName: String = "") {
         DEVICE_MAC = deviceAddress
         if (deviceName.isNotEmpty()) {
@@ -99,7 +106,7 @@ class ControlViewModel @Inject constructor(
         )
     }
 
-    private fun sendCommand(command: String) {
+    fun sendCommand(command: String) {
         if (bluetoothSocket != null) {
             try {
                 useCases.sendCommand(bluetoothSocket!!, command)
