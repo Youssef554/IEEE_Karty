@@ -60,18 +60,17 @@ class ControlActivity : AppCompatActivity() {
                 responseRV.smoothScrollToPosition(it.count()-1)
             }
 
-            Log.e("ttt", "onCreate: jsfkjdkfjhdkjfhkjdshf ${it.size}")
         }
 
 
         //movement controls using a custom onTouch listener
         forewordBtn.setOnClickListener {
             Log.d("ttt", "onCreate: moving foreword")
-            viewModel.move("a")
+            viewModel.move("c")
         }
         backwardBtn.setOnClickListener {
             Log.d("ttt", "onCreate: moving backward")
-            viewModel.move("c")
+            viewModel.move("a")
         }
         rightBtn.setOnClickListener {
             Log.d("ttt", "onCreate: moving right")
@@ -82,12 +81,12 @@ class ControlActivity : AppCompatActivity() {
             viewModel.move("b")
         }
 
-        //long press to move foreword fast
-        forewordBtn.setOnLongClickListener {
+        //long press to move foreword fast-will not be used
+/*        forewordBtn.setOnLongClickListener {
             viewModel.move("f")
             Toast.makeText(this, "Max Speed", Toast.LENGTH_SHORT).show()
             true
-        }
+        }*/
         //stop button
         stopBtn.setOnClickListener {
             Log.d("ttt", "onCreate: car stopping")

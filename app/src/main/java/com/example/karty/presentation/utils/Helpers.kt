@@ -26,18 +26,22 @@ object Helpers {
 
     fun String.filterBluetoothMessages():List<Int>{
         //moving left
-        if (this.contains("two motors are moving forward in a speed of (3 volts)")){
-            return listOf(3, 3)
-        }else if (this.contains("two motors are moving forward in full speed (5 volts)")){
-            return listOf(5, 5)
-        }else if (this.contains("two motors are moving backward in full speed")){
-            return listOf(-5,-5)
-        }else if (this.contains("left motor is moving left in low speed (3 volt)")){
-            return listOf(3, 5)
-        }else if (this.contains("left motor is moving right in full speed (5 volt)")){
-            return listOf(5, 3)
-        }else{
-            return listOf(0, 0)
+        return when {
+            this.contains("two motors are moving forward in full") -> {
+                listOf(5, 5)
+            }
+            this.contains("two motors are moving backward in full ") -> {
+                listOf(-5,-5)
+            }
+            this.contains("left motor is moving left in low speed (3 volt)") -> {
+                listOf(3, 5)
+            }
+            this.contains("left motor is moving right in full speed") -> {
+                listOf(5, 3)
+            }
+            else -> {
+                listOf(0, 0)
+            }
         }
     }
     
