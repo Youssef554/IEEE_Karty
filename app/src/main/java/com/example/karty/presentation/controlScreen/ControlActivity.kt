@@ -39,12 +39,16 @@ class ControlActivity : AppCompatActivity() {
         //Declarations
         val isDataSavedSwitch: SwitchCompat = findViewById(R.id.sw_IsDataSaved)
         val responseRV: RecyclerView = findViewById(R.id.rv_DataMonitor)
+        val receivingSwitch:SwitchCompat = findViewById(R.id.sw_IsReceivingEnabled)
         val stopBtn:Button = findViewById(R.id.btn_Stop)
         val forewordBtn: Button = findViewById(R.id.btn_GoForeword)
         val backwardBtn: Button = findViewById(R.id.btn_GoBackward)
         val rightBtn: Button = findViewById(R.id.btn_GoRight)
         val leftBtn: Button = findViewById(R.id.btn_GoLeft)
-        setupDatabaseSwitch(isDataSavedSwitch)
+
+        //configurations
+        setupDatabaseSwitch(isDataSavedSwitch, receivingSwitch)
+        setupReceivingSwitch(receivingSwitch, receivingSwitch)
         setupRecyclerView(responseRV)
 
         //monitor is connected or not
@@ -66,11 +70,11 @@ class ControlActivity : AppCompatActivity() {
         //movement controls using a custom onTouch listener
         forewordBtn.setOnClickListener {
             Log.d("ttt", "onCreate: moving foreword")
-            viewModel.move("c")
+            viewModel.move("a")
         }
         backwardBtn.setOnClickListener {
             Log.d("ttt", "onCreate: moving backward")
-            viewModel.move("a")
+            viewModel.move("c")
         }
         rightBtn.setOnClickListener {
             Log.d("ttt", "onCreate: moving right")
@@ -102,21 +106,44 @@ class ControlActivity : AppCompatActivity() {
         rv.adapter = adapter
     }
 
-    private fun setupDatabaseSwitch(isDataSavedSwitch: SwitchCompat) {
+    private fun setupDatabaseSwitch(isDataSavedSwitch: SwitchCompat, receivingSwitch: SwitchCompat) {
         viewModel.isLoggingEnabled.observe(this) {
             isDataSavedSwitch.isChecked = it
-
         }
 
         isDataSavedSwitch.setOnCheckedChangeListener { _, isChecked: Boolean ->
             if (isChecked) {
                 Toast.makeText(
                     this,
-                    "Data is saved to the database the app may be slow",
+                    "receiving data enabled to store data...",
                     Toast.LENGTH_SHORT
                 ).show()
             }
             viewModel.changeIsDataLogged(isChecked)
+        }
+
+    }
+
+    private fun setupReceivingSwitch(isReceivingSwitch: SwitchCompat, isDataSavedSwitch: SwitchCompat) {
+        viewModel.isLoggingEnabled.observe(this) {
+            isReceivingSwitch.isChecked = it
+        }
+
+        isReceivingSwitch.setOnCheckedChangeListener { _, isChecked: Boolean ->
+            if (isChecked) {
+                Toast.makeText(
+                    this,
+                    "receiving data...",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }else{
+                Toast.makeText(
+                    this,
+                    "receiving data disabled",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            viewModel.changeReceivingState(isChecked)
         }
 
     }

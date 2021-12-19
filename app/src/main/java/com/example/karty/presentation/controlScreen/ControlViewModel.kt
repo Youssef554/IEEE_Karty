@@ -18,7 +18,6 @@ import kotlinx.coroutines.*
 import java.io.IOException
 import javax.inject.Inject
 
-private const val DELAY = 900L
 private lateinit var DEVICE_MAC: String
 private var DEVICE_NAME = ""
 
@@ -35,6 +34,9 @@ class ControlViewModel @Inject constructor(
 
     private var _isLoggingEnabled: MutableLiveData<Boolean> = MutableLiveData(true)
     val isLoggingEnabled: LiveData<Boolean> = _isLoggingEnabled
+
+    private var _isReceivingEnabled: MutableLiveData<Boolean> = MutableLiveData(true)
+    val isReceivingEnabled: LiveData<Boolean> = _isReceivingEnabled
 
     private var _response: MutableLiveData<MutableList<RcResponse>> =
         MutableLiveData(mutableListOf())
@@ -61,18 +63,16 @@ class ControlViewModel @Inject constructor(
                     if (motionEvent.action == MotionEvent.ACTION_UP) {
                         break
                     }
-                    delay(DELAY)
                 }
             }
         }
         return true
     }
 
-    fun move(direction: String){
-        viewModelScope.launch {
-            sendCommand(direction)
-        }
+    fun move(direction: String) {
+        sendCommand(direction)
     }
+
     fun connect(deviceAddress: String, deviceName: String = "") {
         DEVICE_MAC = deviceAddress
         if (deviceName.isNotEmpty()) {
@@ -110,7 +110,9 @@ class ControlViewModel @Inject constructor(
         if (bluetoothSocket != null) {
             try {
                 useCases.sendCommand(bluetoothSocket!!, command)
-                receiveData()
+                if (isReceivingEnabled.value == true){
+                    receiveData()
+                }
             } catch (e: IOException) {
                 Log.e("ttt", "sendCommand: ${e.message}")
                 _isConnected.value = false
@@ -216,6 +218,10 @@ class ControlViewModel @Inject constructor(
         }
     }
 
+
+    fun changeReceivingState(isReceived: Boolean) {
+        _isReceivingEnabled.value = isReceived
+    }
 
     fun disconnect() {
         if (bluetoothSocket != null) {

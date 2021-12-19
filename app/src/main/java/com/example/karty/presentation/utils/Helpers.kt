@@ -33,11 +33,11 @@ object Helpers {
             this.contains("two motors are moving backward in full ") -> {
                 listOf(-5,-5)
             }
-            this.contains("left motor is moving left in low speed (3 volt)") -> {
-                listOf(3, 5)
-            }
             this.contains("left motor is moving right in full speed") -> {
-                listOf(5, 3)
+                listOf(5, 0)
+            }
+            this.contains("left motor is moving right in zero speed") -> {
+                listOf(0, 5)
             }
             else -> {
                 listOf(0, 0)
