@@ -38,8 +38,9 @@ class ControlActivity : AppCompatActivity() {
 
         //Declarations
         val isDataSavedSwitch: SwitchCompat = findViewById(R.id.sw_IsDataSaved)
-        val responseRV: RecyclerView = findViewById(R.id.rv_DataMonitor)
         val receivingSwitch:SwitchCompat = findViewById(R.id.sw_IsReceivingEnabled)
+        val speedController:SeekBar = findViewById(R.id.sb_SpeedControl)
+        val responseRV: RecyclerView = findViewById(R.id.rv_DataMonitor)
         val stopBtn:Button = findViewById(R.id.btn_Stop)
         val forewordBtn: Button = findViewById(R.id.btn_GoForeword)
         val backwardBtn: Button = findViewById(R.id.btn_GoBackward)
@@ -85,12 +86,6 @@ class ControlActivity : AppCompatActivity() {
             viewModel.move("b")
         }
 
-        //long press to move foreword fast-will not be used
-/*        forewordBtn.setOnLongClickListener {
-            viewModel.move("f")
-            Toast.makeText(this, "Max Speed", Toast.LENGTH_SHORT).show()
-            true
-        }*/
         //stop button
         stopBtn.setOnClickListener {
             Log.d("ttt", "onCreate: car stopping")
