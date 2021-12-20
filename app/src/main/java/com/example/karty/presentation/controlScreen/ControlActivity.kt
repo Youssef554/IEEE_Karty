@@ -38,10 +38,10 @@ class ControlActivity : AppCompatActivity() {
 
         //Declarations
         val isDataSavedSwitch: SwitchCompat = findViewById(R.id.sw_IsDataSaved)
-        val receivingSwitch:SwitchCompat = findViewById(R.id.sw_IsReceivingEnabled)
-        val speedController:SeekBar = findViewById(R.id.sb_SpeedControl)
+        val receivingSwitch: SwitchCompat = findViewById(R.id.sw_IsReceivingEnabled)
+        val speedController: SeekBar = findViewById(R.id.sb_SpeedControl)
         val responseRV: RecyclerView = findViewById(R.id.rv_DataMonitor)
-        val stopBtn:Button = findViewById(R.id.btn_Stop)
+        val stopBtn: Button = findViewById(R.id.btn_Stop)
         val forewordBtn: Button = findViewById(R.id.btn_GoForeword)
         val backwardBtn: Button = findViewById(R.id.btn_GoBackward)
         val rightBtn: Button = findViewById(R.id.btn_GoRight)
@@ -61,35 +61,79 @@ class ControlActivity : AppCompatActivity() {
         viewModel.response.observe(this) {
             adapter.submitList(it)
             adapter.notifyDataSetChanged()
-            if (it.size > 0){
-                responseRV.smoothScrollToPosition(it.count()-1)
+            if (it.size > 0) {
+                responseRV.smoothScrollToPosition(it.count() - 1)
             }
 
         }
 
 
         //movement controls using a custom onTouch listener
+
+        //    case 'b':forward(122);break; // 2 Volt forward
+        //    case 'c':forward(153);break; // 3 Volt forward
+        //    case 'd':forward(204);break; // 4 Volt forward
+        //    case 'e':forward(255);break; // 5 Volt forward
         forewordBtn.setOnClickListener {
             Log.d("ttt", "onCreate: moving foreword")
-            viewModel.move("a")
+            when (speedController.progress) {
+                2 -> viewModel.move("b")
+                3 -> viewModel.move("c")
+                4 -> viewModel.move("d")
+                5 -> viewModel.move("e")
+                else -> viewModel.move("b")
+            }
         }
+
+        //    case 'g':right(122);break; // 2 Volt right
+        //    case 'h':right(153);break; // 3 Volt right
+        //    case 'i':right(204);break; // 4 Volt right
+        //    case 'j':right(255);break; // 5 Volt right
         backwardBtn.setOnClickListener {
             Log.d("ttt", "onCreate: moving backward")
-            viewModel.move("c")
+            when (speedController.progress) {
+                2 -> viewModel.move("g")
+                3 -> viewModel.move("h")
+                4 -> viewModel.move("i")
+                5 -> viewModel.move("j")
+                else -> viewModel.move("g")
+            }
         }
+
+        //    case 'l':backward(122);break; // 2 Volt backward
+        //    case 'm':backward(153);break; // 3 Volt backward
+        //    case 'n':backward(204);break; // 4 Volt backward
+        //    case 'o':backward(255);break; // 5 Volt backward
         rightBtn.setOnClickListener {
             Log.d("ttt", "onCreate: moving right")
-            viewModel.move("d")
+            when (speedController.progress) {
+                2 -> viewModel.move("l")
+                3 -> viewModel.move("m")
+                4 -> viewModel.move("n")
+                5 -> viewModel.move("o")
+                else -> viewModel.move("l")
+            }
         }
+
+        //    case 'q':left(122);break; // 2 Volt left
+        //    case 'r':left(153);break; // 3 Volt left
+        //    case 's':left(204);break; // 4 Volt left
+        //    case 't':left(255);break; // 5 Volt left
         leftBtn.setOnClickListener {
             Log.d("ttt", "onCreate: moving left")
-            viewModel.move("b")
+            when(speedController.progress){
+                2 -> viewModel.move("q")
+                3 -> viewModel.move("r")
+                4 -> viewModel.move("s")
+                5 -> viewModel.move("t")
+                else -> viewModel.move("q")
+            }
         }
 
         //stop button
         stopBtn.setOnClickListener {
             Log.d("ttt", "onCreate: car stopping")
-            viewModel.sendCommand("e")
+            viewModel.sendCommand("u")
         }
 
     }
@@ -101,7 +145,10 @@ class ControlActivity : AppCompatActivity() {
         rv.adapter = adapter
     }
 
-    private fun setupDatabaseSwitch(isDataSavedSwitch: SwitchCompat, receivingSwitch: SwitchCompat) {
+    private fun setupDatabaseSwitch(
+        isDataSavedSwitch: SwitchCompat,
+        receivingSwitch: SwitchCompat
+    ) {
         viewModel.isLoggingEnabled.observe(this) {
             isDataSavedSwitch.isChecked = it
         }
@@ -119,7 +166,10 @@ class ControlActivity : AppCompatActivity() {
 
     }
 
-    private fun setupReceivingSwitch(isReceivingSwitch: SwitchCompat, isDataSavedSwitch: SwitchCompat) {
+    private fun setupReceivingSwitch(
+        isReceivingSwitch: SwitchCompat,
+        isDataSavedSwitch: SwitchCompat
+    ) {
         viewModel.isLoggingEnabled.observe(this) {
             isReceivingSwitch.isChecked = it
         }
@@ -131,7 +181,7 @@ class ControlActivity : AppCompatActivity() {
                     "receiving data...",
                     Toast.LENGTH_SHORT
                 ).show()
-            }else{
+            } else {
                 Toast.makeText(
                     this,
                     "receiving data disabled",
